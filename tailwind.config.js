@@ -8,7 +8,15 @@ module.exports = {
       fontFamily: {
         sans: ["Inter var", ...defaultTheme.fontFamily.sans],
       },
+      colors: {
+        "pb-purple": "#6D72F6",
+      },
     },
   },
-  plugins: [],
+  variants: {
+    extend: {
+      textColor: ["visited"],
+    },
+  },
+  plugins: [require("@tailwindcss/forms")],
 }
