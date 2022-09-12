@@ -1,4 +1,4 @@
-export function Spinner() {
+export const Spinner = () => {
   return (
     <svg
       className="animate-spin"
