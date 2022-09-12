@@ -18,11 +18,11 @@ const Dashboard: NextPage = () => {
               key={entity}
               className={({ selected }) =>
                 clsx(
-                  "w-full rounded-lg py-2.5 text-sm font-medium leading-5 text-pb-purple",
+                  "w-full rounded-lg py-2.5 text-sm font-medium leading-5 text-indigo-400",
                   "ring-white ring-opacity-60 ring-offset-2 ring-offset-pb-purple focus:outline-none focus:ring-2",
                   selected
                     ? "bg-white shadow"
-                    : "text-blue-100 hover:bg-white/[0.12] hover:text-white",
+                    : "text-blue-100 hover:bg-white/[0.12] hover:text-pb-purple",
                 )
               }
             >

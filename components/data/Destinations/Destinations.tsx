@@ -1,5 +1,5 @@
 import { Destination } from "@/lib/types"
-import { fetcher } from "@/utils/fetcher"
+import { fetcher } from "@/utils/api"
 import Link from "next/link"
 import pluralize from "pluralize"
 import useSWR from "swr"
@@ -7,7 +7,7 @@ import { Spinner } from "../../layout/Spinner/Spinner"
 
 export const Destinations = () => {
   const { data, error } = useSWR<{ content: Destination[] }>(
-    `${process.env.NEXT_PUBLIC_PIPEBIRD_BASE_URL}/destinations`,
+    "/destinations",
     fetcher,
   )
 
