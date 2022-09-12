@@ -1,8 +1,9 @@
-import { Destination, View } from "@/lib/types"
-import { fetcher } from "@/utils/api"
 import Link from "next/link"
 import useSWR from "swr"
-import { Spinner } from "../../layout/Spinner/Spinner"
+
+import { View } from "@/lib/types"
+import { fetcher } from "@/utils/api"
+import { Spinner } from "@/components/layout/Spinner/Spinner"
 
 export const Views = () => {
   const { data, error } = useSWR<{ content: View[] }>("/views", fetcher)
@@ -61,12 +62,6 @@ export const Views = () => {
                   >
                     Columns
                   </th>
-                  <th
-                    scope="col"
-                    className="relative py-3.5 pl-3 pr-4 sm:pr-6 md:pr-0"
-                  >
-                    <span className="sr-only">Edit</span>
-                  </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
@@ -82,14 +77,6 @@ export const Views = () => {
                       <span className="inline-flex rounded-full bg-gray-100 px-2 text-xs font-semibold leading-5 text-gray-500">
                         {e.columns.map((c) => c.name).join(" | ")}
                       </span>
-                    </td>
-                    <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6 md:pr-0">
-                      <a
-                        href="#"
-                        className="text-indigo-600 hover:text-indigo-900"
-                      >
-                        Edit
-                      </a>
                     </td>
                   </tr>
                 ))}

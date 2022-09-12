@@ -1,9 +1,9 @@
-import { Destination, Source } from "@/lib/types"
-import { fetcher } from "@/utils/api"
 import Link from "next/link"
-import pluralize from "pluralize"
 import useSWR from "swr"
-import { Spinner } from "../../layout/Spinner/Spinner"
+
+import { Source } from "@/lib/types"
+import { fetcher } from "@/utils/api"
+import { Spinner } from "@/components/layout/Spinner/Spinner"
 
 export const Sources = () => {
   const { data, error } = useSWR<{ content: Source[] }>("/sources", fetcher)
@@ -80,17 +80,22 @@ export const Sources = () => {
                       {e.sourceType}
                     </td>
                     <td className="whitespace-nowrap py-4 px-3 text-sm text-gray-500">
-                      <span className="inline-flex rounded-full bg-green-100 px-2 text-xs font-semibold leading-5 text-green-800">
-                        {e.status}
-                      </span>
+                      {e.status === "REACHABLE" ? (
+                        <span className="inline-flex rounded-full bg-green-100 px-2 text-xs font-semibold leading-5 text-green-800">
+                          {e.status}
+                        </span>
+                      ) : (
+                        <span className="inline-flex rounded-full bg-red-100 px-2 text-xs font-semibold leading-5 text-red-800">
+                          {e.status}
+                        </span>
+                      )}
                     </td>
                     <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6 md:pr-0">
-                      <a
-                        href="#"
-                        className="text-indigo-600 hover:text-indigo-900"
-                      >
-                        Edit
-                      </a>
+                      <Link href={`/sources/${e.id}/edit`}>
+                        <a className="text-indigo-600 hover:text-indigo-900">
+                          Edit
+                        </a>
+                      </Link>
                     </td>
                   </tr>
                 ))}
