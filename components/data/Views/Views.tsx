@@ -1,15 +1,11 @@
 import { Destination, View } from "@/lib/types"
-import { fetcher } from "@/utils/fetcher"
+import { fetcher } from "@/utils/api"
 import Link from "next/link"
-import pluralize from "pluralize"
 import useSWR from "swr"
 import { Spinner } from "../../layout/Spinner/Spinner"
 
 export const Views = () => {
-  const { data, error } = useSWR<{ content: View[] }>(
-    `${process.env.NEXT_PUBLIC_PIPEBIRD_BASE_URL}/views`,
-    fetcher,
-  )
+  const { data, error } = useSWR<{ content: View[] }>("/views", fetcher)
 
   if (!data) {
     return (
