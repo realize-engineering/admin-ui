@@ -1,3 +1,6 @@
+ARG PIPEBIRD_BASE_URL ${NEXT_PUBLIC_PIPEBIRD_BASE_URL}
+ARG PORT ${PORT:-375}
+
 # Install dependencies only when needed
 FROM node:16-alpine AS deps
 # Check https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine to understand why libc6-compat might be needed.
@@ -17,12 +20,24 @@ COPY . .
 
 ENV NEXT_TELEMETRY_DISABLED 1
 
+ARG PORT
+ARG PIPEBIRD_BASE_URL
+
+ENV PORT $PORT
+ENV NEXT_PUBLIC_PIPEBIRD_BASE_URL $PIPEBIRD_BASE_URL
+
 # If using npm comment out above and use below instead
 RUN npm run build
 
 # Production image, copy all the files and run next
 FROM node:16-alpine AS runner
 WORKDIR /app
+
+ARG PORT
+ARG PIPEBIRD_BASE_URL
+
+ENV PORT $PORT
+ENV NEXT_PUBLIC_PIPEBIRD_BASE_URL $PIPEBIRD_BASE_URL
 
 ENV NODE_ENV production
 ENV NEXT_TELEMETRY_DISABLED 1
@@ -39,7 +54,4 @@ COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
 USER nextjs
 
-ARG PORT=375
-ENV PORT ${PORT}
-ENV NEXT_PUBLIC_PIPEBIRD_BASE_URL ${NEXT_PUBLIC_PIPEBIRD_BASE_URL}
 CMD ["node", "server.js"]
