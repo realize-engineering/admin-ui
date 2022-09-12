@@ -8,7 +8,6 @@ const Environ = z.object({
     z.literal("test"),
   ]),
   NEXT_PUBLIC_PIPEBIRD_BASE_URL: z.string(),
-  NEXT_PUBLIC_PIPEBIRD_SECRET_KEY: z.string(),
 })
 
 export type Environ = z.infer<typeof Environ>
