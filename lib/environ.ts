@@ -8,6 +8,9 @@ const Environ = z.object({
     z.literal("test"),
   ]),
   NEXT_PUBLIC_PIPEBIRD_BASE_URL: z.string(),
+  NEXT_PUBLIC_TLS: z
+    .union([z.literal("TLS"), z.literal("NO_TLS")])
+    .default("NO_TLS"),
 })
 
 export type Environ = z.infer<typeof Environ>

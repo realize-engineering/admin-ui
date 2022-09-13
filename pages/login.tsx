@@ -12,6 +12,7 @@ import { ControlledInput } from "@/components/forms"
 import { Spinner } from "@/components/layout"
 import { PrimaryButton } from "@/components/buttons"
 import { api } from "@/utils/api"
+import { environ } from "@/lib/environ"
 
 const formData = z.object({
   secretKey: z
@@ -34,7 +35,9 @@ const Login: NextPage = () => {
 
   const onSubmit = handleSubmit(async (data) => {
     try {
-      Cookies.set("pipebird-admin-auth", data.secretKey, { secure: true })
+      Cookies.set("pipebird-admin-auth", data.secretKey, {
+        secure: environ.NEXT_PUBLIC_TLS === "TLS" ? true : false,
+      })
 
       // ping server without error
       await api.get("/destinations")
