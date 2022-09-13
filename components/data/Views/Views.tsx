@@ -6,7 +6,7 @@ import { fetcher } from "@/utils/api"
 import { Spinner } from "@/components/layout/Spinner/Spinner"
 
 export const Views = () => {
-  const { data, error } = useSWR<{ content: View[] }>("/views", fetcher)
+  const { data } = useSWR<{ content: View[] }>("/views", fetcher)
 
   if (!data) {
     return (
