@@ -4,4 +4,4 @@
 # environment variables. Args disallow users to reuse the container.
 
 npm run build
-npm start
+npm run start
