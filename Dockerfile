@@ -1,7 +1,9 @@
-# Run
-FROM node:16 as runner
-WORKDIR /pipebird
+FROM node:18-alpine
+
+WORKDIR /admin-ui
+
 COPY . .
+
 RUN npm ci
 ENV NODE_ENV production
 ENV NEXT_TELEMETRY_DISABLED 1
@@ -9,4 +11,5 @@ ENV NEXT_PUBLIC_PIPEBIRD_BASE_URL ${NEXT_PUBLIC_PIPEBIRD_BASE_URL}
 ENV NEXT_PUBLIC_TLS ${NEXT_PUBLIC_TLS:-NO_TLS}
 ENV PORT ${PORT:-375}
 RUN chmod +x ./start.sh
-CMD ["./start.sh"]
+
+CMD ["sh", "./start.sh"]
