@@ -11,7 +11,6 @@ ENV NEXT_TELEMETRY_DISABLED 1
 ENV NEXT_PUBLIC_PIPEBIRD_BASE_URL ${NEXT_PUBLIC_PIPEBIRD_BASE_URL}
 ENV NEXT_PUBLIC_TLS ${NEXT_PUBLIC_TLS:-NO_TLS}
 ENV PORT ${PORT:-375}
-COPY . .
-COPY --from=installer /app/node_modules ./node_modules
+COPY --from=installer /app/ ./
 RUN chmod +x ./start.sh
 CMD ["./start.sh"]
