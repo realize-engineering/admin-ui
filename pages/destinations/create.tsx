@@ -10,7 +10,7 @@ import Router from "next/router"
 import { XCircleIcon } from "@heroicons/react/solid"
 import { api } from "@/utils/api"
 
-const destinations = ["REDSHIFT", "SNOWFLAKE", "PROVISIONED_S3"]
+const destinations = ["REDSHIFT", "SNOWFLAKE", "PROVISIONED_S3", "BIGQUERY"]
 
 const formData = z.discriminatedUnion("destinationType", [
   z.object({
@@ -46,6 +46,33 @@ const formData = z.discriminatedUnion("destinationType", [
     database: z.string(),
     username: z.string(),
     password: z.string(),
+  }),
+  z.object({
+    nickname: z.string().min(1),
+    destinationType: z.literal("BIGQUERY"),
+    projectId: z.string(), // stored as database
+    dataset: z.string(), // stored as schema
+    clientEmail: z.string(), // stored as username
+    serviceAccount: z.preprocess(
+      (val) => {
+        const details = typeof val === "string" ? val : ""
+        return JSON.parse(details)
+      },
+      z.object({
+        type: z.string(),
+        project_id: z.string(),
+        private_key_id: z.string(),
+        private_key: z.string(),
+        client_email: z.string(),
+        client_id: z.string(),
+        auth_uri: z.string(),
+        token_uri: z.string(),
+        auth_provider_x509_cert_url: z.string(),
+        client_x509_cert_url: z.string(),
+      }),
+    ),
+    bucketName: z.string(),
+    bucketRegion: z.string(),
   }),
 ])
 
@@ -161,79 +188,144 @@ const CreateDestination: NextPage = () => {
                         />
                       </div>
 
-                      {destinationType !== "PROVISIONED_S3" && (
+                      {destinationType !== "PROVISIONED_S3" &&
+                        destinationType !== "BIGQUERY" && (
+                          <>
+                            <div className="col-span-6 sm:col-span-3">
+                              <ControlledInput
+                                id="host"
+                                label="Host"
+                                type="text"
+                                autoComplete="host"
+                                {...register("host")}
+                              />
+                            </div>
+
+                            <div className="col-span-6 sm:col-span-3">
+                              <ControlledInput
+                                id="port"
+                                label="Port"
+                                type="text"
+                                autoComplete="port"
+                                {...register("port")}
+                              />
+                            </div>
+
+                            <div className="col-span-6 sm:col-span-3">
+                              <ControlledInput
+                                id="schema"
+                                label="Schema"
+                                type="text"
+                                autoComplete="schema"
+                                {...register("schema")}
+                              />
+                            </div>
+
+                            <div className="col-span-6 sm:col-span-3">
+                              <ControlledInput
+                                id="database"
+                                label="Database"
+                                type="text"
+                                autoComplete="database"
+                                {...register("database")}
+                              />
+                            </div>
+
+                            <div className="col-span-6 sm:col-span-3">
+                              <ControlledInput
+                                id="username"
+                                label="Username"
+                                type="text"
+                                autoComplete="username"
+                                {...register("username")}
+                              />
+                            </div>
+
+                            <div className="col-span-6 sm:col-span-3">
+                              <ControlledInput
+                                id="password"
+                                label="Password"
+                                type="password"
+                                autoComplete="password"
+                                {...register("password")}
+                              />
+                            </div>
+
+                            {destinationType === "SNOWFLAKE" && (
+                              <div className="col-span-6 sm:col-span-3">
+                                <ControlledInput
+                                  id="warehouse"
+                                  label="Default Warehouse"
+                                  type="text"
+                                  autoComplete="warehouse"
+                                  {...register("warehouse")}
+                                />
+                              </div>
+                            )}
+                          </>
+                        )}
+
+                      {destinationType === "BIGQUERY" && (
                         <>
                           <div className="col-span-6 sm:col-span-3">
                             <ControlledInput
-                              id="host"
-                              label="Host"
+                              id="projectId"
+                              label="GCP Project ID"
                               type="text"
-                              autoComplete="host"
-                              {...register("host")}
+                              autoComplete="projectId"
+                              {...register("projectId")}
                             />
                           </div>
 
                           <div className="col-span-6 sm:col-span-3">
                             <ControlledInput
-                              id="port"
-                              label="Port"
+                              id="dataset"
+                              label="BigQuery Dataset"
                               type="text"
-                              autoComplete="port"
-                              {...register("port")}
+                              autoComplete="dataset"
+                              {...register("dataset")}
                             />
                           </div>
 
                           <div className="col-span-6 sm:col-span-3">
                             <ControlledInput
-                              id="schema"
-                              label="Schema"
+                              id="clientEmail"
+                              label="Client Email"
                               type="text"
-                              autoComplete="schema"
-                              {...register("schema")}
+                              autoComplete="clientEmail"
+                              {...register("clientEmail")}
                             />
                           </div>
 
                           <div className="col-span-6 sm:col-span-3">
                             <ControlledInput
-                              id="database"
-                              label="Database"
+                              id="serviceAccount"
+                              label="Service Account JSON"
                               type="text"
-                              autoComplete="database"
-                              {...register("database")}
+                              autoComplete="serviceAccount"
+                              {...register("serviceAccount")}
                             />
                           </div>
 
                           <div className="col-span-6 sm:col-span-3">
                             <ControlledInput
-                              id="username"
-                              label="Username"
+                              id="bucketName"
+                              label="Staging Bucket Name"
                               type="text"
-                              autoComplete="username"
-                              {...register("username")}
+                              autoComplete="bucketName"
+                              {...register("bucketName")}
                             />
                           </div>
 
                           <div className="col-span-6 sm:col-span-3">
                             <ControlledInput
-                              id="password"
-                              label="Password"
-                              type="password"
-                              autoComplete="password"
-                              {...register("password")}
+                              id="bucketRegion"
+                              label="Staging Bucket Region"
+                              type="text"
+                              autoComplete="bucketRegion"
+                              {...register("bucketRegion")}
                             />
                           </div>
-
-                          {destinationType === "SNOWFLAKE" && (
-                            <div className="col-span-6 sm:col-span-3">
-                              <ControlledInput
-                                id="warehouse"
-                                label="Default Warehouse"
-                                type="text"
-                                autoComplete="warehouse"
-                                {...register("warehouse")}
-                              />
-                            </div>
-                          )}
                         </>
                       )}
                     </div>
